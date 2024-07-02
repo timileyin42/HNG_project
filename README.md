@@ -1,4 +1,4 @@
-# Nginx Deployment
+# HNG_project work
 
 ## description
- This is a repository that contain a demo deployment of web pages using nginx
+ This is a repository that contain HNG tech schhol work project
