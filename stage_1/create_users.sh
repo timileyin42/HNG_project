@@ -21,7 +21,7 @@ if [ ! -f "$INPUT_FILE" ]; then
     exit 1
 fi
 
-# Define the log file path
+# Define paths and permissions
 LOG_FILE="/var/log/user_management.log"
 SECURE_DIR="/var/secure"
 SECURE_FILE="$SECURE_DIR/user_passwords.csv"
@@ -39,19 +39,19 @@ if [ ! -f "$SECURE_FILE" ]; then
 fi
 
 # Start logging
-exec &>>$LOG_FILE
+exec &>>"$LOG_FILE"
 
 # Read the input file line by line
 while IFS=';' read -r username groups password; do
     if [[ -z "$username" || -z "$groups" ]]; then
-        echo "$(date): Skipping invalid line: $username;$groups;$password" | tee -a "$LOG_FILE"
+        echo "$(date): Skipping invalid line: $username;$groups;$password" >&2
         continue
     fi
 
     # Split the groups by comma
     IFS=',' read -ra group_array <<< "$groups"
 
-    # Create the user
+    # Create the user if it doesn't already exist
     if ! id "$username" &>/dev/null; then
         useradd "$username"
         echo "$(date): Created user $username" | tee -a "$LOG_FILE"
@@ -59,7 +59,7 @@ while IFS=';' read -r username groups password; do
         echo "$(date): User $username already exists." | tee -a "$LOG_FILE"
     fi
 
-    # Create a group with the same name as the username
+    # Create a group with the same name as the username if it doesn't already exist
     GROUPNAME="$username"
     if ! getent group "$GROUPNAME" &>/dev/null; then
         groupadd "$GROUPNAME"
@@ -99,5 +99,7 @@ while IFS=';' read -r username groups password; do
         echo "$(date): Generated and stored password for $username" | tee -a "$LOG_FILE"
     fi
 
-done <"$INPUT_FILE"
+done < "$INPUT_FILE"
+
+echo "$(date): User creation process completed" | tee -a "$LOG_FILE"
 
