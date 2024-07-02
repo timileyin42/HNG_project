@@ -1,0 +1,46 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.site-header,.site-footer {
+    background-color: #0074D9; /* Dodger Blue */
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+.content {
+    background-color: #F5F5F5; /* Light Gray */
+    padding: 20px;
+}
+
+.about,.projects {
+    background-color: #FFF; /* White */
+    margin-bottom: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Gradients */
+header::after, footer::after {
+    content: "";
+    display: block;
+    height: 2px;
+    background-image: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
+    width: 50%;
+    margin: auto;
+}
+
+/* Hover Effects */
+.about:hover,.projects:hover {
+    background-color: #e0e0e0; /* Lighter Gray */
+    transform: scale(1.05);
+    transition: transform 0.3s ease-in-out;
+}
+
+
