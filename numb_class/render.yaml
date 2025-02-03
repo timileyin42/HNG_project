@@ -3,4 +3,4 @@ services:
     name: number-classification-api
     runtime: python
     buildCommand: pip install -r requirements.txt
-    startCommand: python app.py
+    startCommand: gunicorn numb_class.app:app
