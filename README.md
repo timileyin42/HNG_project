@@ -12,7 +12,7 @@ This is a **Number Classification API** built using Python and Flask. It takes a
   - Determines if the number is **odd** or **even**.
   - Calculates the **sum of its digits**.
 - **Fun Fact**:
-  - Fetches a fun fact about the number from the Numbers API.
+  - Fetches a fun fact about the number from the Numbers APIs.
 - **Error Handling**:
   - Handles invalid inputs (e.g., non-numeric values) and returns appropriate error messages.
 
