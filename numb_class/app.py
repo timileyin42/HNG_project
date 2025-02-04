@@ -18,42 +18,48 @@ def is_perfect(n):
     divisors = [i for i in range(1, n) if n % i == 0]
     return sum(divisors) == n
 
-def is_armstrong(n):
-    digits = [int(d) for d in str(abs(n))]
-    length = len(digits)
-    return sum(d**length for d in digits) == abs(n)
-
 def get_fun_fact(n):
     url = f"http://numbersapi.com/{n}/math"
-    response = requests.get(url)
-    return response.text if response.status_code == 200 else "No fun fact available."
+    try:
+        response = requests.get(url, timeout=3)
+        if response.status_code == 200:
+            return response.text
+    except requests.RequestException:
+        pass
+    return "No fun fact available."
 
 # API Endpoint
 @app.route('/api/classify-number', methods=['GET'])
 def classify_number():
     number = request.args.get('number')
 
+    # Ensure number is valid
     try:
         number = float(number)  # Convert input to float
     except (ValueError, TypeError):
-        return jsonify({"error": True, "message": "Invalid number format", "number": number}), 200  # Always return 200
+        return jsonify({
+            "error": True,
+            "message": "Invalid number format"
+        }), 400  # Return 400 for invalid input
 
     int_part = int(number)  # Extract integer part (e.g., 3.14 → 3, -7.89 → -7)
 
     # Determine properties
     properties = ["even" if int_part % 2 == 0 else "odd"]
+    if int_part < 0:
+        properties.append("negative")
 
     response = {
         "number": number,  # Show the original float number
         "integer_part": int_part,  # Show the extracted integer part
-        "is_prime": is_prime(int_part),
-        "is_perfect": is_perfect(int_part),
-        "properties": properties,
-        "digit_sum": sum(int(d) for d in str(abs(int_part))),
-        "fun_fact": get_fun_fact(int_part)
+        "is_prime": bool(is_prime(int_part)),  # Ensure boolean output
+        "is_perfect": bool(is_perfect(int_part)),  # Ensure boolean output
+        "properties": properties,  # Ensure properties is an array
+        "digit_sum": sum(int(d) for d in str(abs(int_part))),  # Ensure numeric output
+        "fun_fact": str(get_fun_fact(int_part))  # Ensure string output
     }
-    
-    return jsonify(response), 200  # Always return 200
+
+    return jsonify(response), 200  # Always return 200 for valid input
 
 # Run the App
 if __name__ == '__main__':
