@@ -34,15 +34,22 @@ def classify_number():
     number = request.args.get('number')
 
     # Ensure number is valid
+    if number is None:
+        return jsonify({
+            "error": True,
+            "message": "Number parameter is required",
+            "number": None
+        }), 400  
+
     try:
         number = float(number)  # Convert input to float
+        int_part = int(number)  # Extract integer part
     except (ValueError, TypeError):
         return jsonify({
             "error": True,
-            "message": "Invalid number format"
-        }), 400  # Return 400 for invalid input
-
-    int_part = int(number)  # Extract integer part (e.g., 3.14 → 3, -7.89 → -7)
+            "message": "Invalid number format",
+            "number": number  # Include the invalid input
+        }), 400  # Return 400 only for invalid input
 
     # Determine properties
     properties = ["even" if int_part % 2 == 0 else "odd"]
